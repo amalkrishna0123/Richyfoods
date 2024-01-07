@@ -1,8 +1,10 @@
 import React, { useContext } from "react";
-import { AllMenuContext } from "./DataApi";
+import { AllMenuContext } from "./AllMenuContext";
 
-const PopUp = ({ closebtnHandler, currentDish, allMenu }) => {
+
+const PopUp = ({ closebtnHandler, currentDish, allMenu, addToCartHandler }) => {
   const allMenus = useContext(AllMenuContext);
+  
 
   // console.log("Current Dish:", currentDish);
   // console.log("All Menus are", allMenu);
@@ -12,14 +14,6 @@ const PopUp = ({ closebtnHandler, currentDish, allMenu }) => {
       currentDish &&
       item.strMeal.toLowerCase().includes(currentDish.toLowerCase().trim());
 
-    console.log(
-      "Filtering:",
-      item.strMeal,
-      "Current Dish:",
-      currentDish,
-      "Is Match:",
-      isMatch
-    );
 
     return isMatch;
   });
@@ -31,7 +25,7 @@ const PopUp = ({ closebtnHandler, currentDish, allMenu }) => {
 
   // );
 
-  console.log("Dish details are:", dishDetails);
+  
 
   return (
     <>
@@ -64,8 +58,8 @@ const PopUp = ({ closebtnHandler, currentDish, allMenu }) => {
               </h6>
             </div>
             {/* Incredients div */}
-            <div className=" absolute bottom-[135px] px-4">
-              <p className=" text-[12px] font-normal text-slate-800">
+            <div className=" absolute xxs:bottom-[110px] xs:bottom-[100px] sm:text-[13px] md:text-[14px] xs:text-[11px] px-4 text-[12px] xxs:text-[9px]">
+              <p className=" font-normal text-slate-800">
                 "{item.strInstructions}"
               </p>
             </div>
@@ -74,7 +68,7 @@ const PopUp = ({ closebtnHandler, currentDish, allMenu }) => {
               <button className=" outline-none border-none bg-blue-500 px-2 py-1 rounded-md shadow-sm cursor-pointer hover:bg-slate-500 text-slate-200 transition-all duration-300">
                 Checkout
               </button>
-              <button className=" outline-none border-none bg-orange-500 px-2 py-1 rounded-md shadow-sm cursor-pointer hover:bg-slate-500 text-slate-200 transition-all duration-300">
+              <button className=" outline-none border-none bg-orange-500 px-2 py-1 rounded-md shadow-sm cursor-pointer hover:bg-slate-500 text-slate-200 transition-all duration-300" onClick={()=>addToCartHandler(item.strMealThumb, item.strMeal,)}>
                 AddToCart
               </button>
             </div>

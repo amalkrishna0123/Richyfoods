@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import PopUp from "./PopUp";
-import { AllMenuContext } from "./DataApi";
+import { AllMenuContext } from "./AllMenuContext";
+import { AddtoCartManage } from "./AddToCartContext";
 
 
 
@@ -8,6 +9,7 @@ function CardSlider({ menu }) {
   let [showPopUp, setShowPopUp] = useState(false);
   let [currentDish, setcurrentDish] = useState("");
   const allMenus = useContext(AllMenuContext)
+  const {addToCartHandler} = useContext(AddtoCartManage)
   let maxItem = 8;
 
   let showPopUpHandler = (dishName) => {
@@ -29,7 +31,7 @@ function CardSlider({ menu }) {
         onClick={() => showPopUpHandler(meal.strMeal)}
       >
         <li>
-          <div className="mx-3 w-[200px] relative h-[250px] rounded-[5%] bg-slate-400">
+          <div className=" xs:w-[190px] xxs:w-[300px] xxs:h-[300px] sm:mx-3 sm:w-[200px] relative sm:h-[250px] rounded-[5%] bg-slate-400 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
             <img
               src={meal.strMealThumb}
               className="absolute object-cover h-full w-full rounded-[5%]"
@@ -47,14 +49,15 @@ function CardSlider({ menu }) {
 
   console.log("This is a filtered meals", filteredMeals);
   return (
-    <>
+    <>  
       {showPopUp && (
         <PopUp
           closebtnHandler={closebtnHandler}
           currentDish={currentDish}
+          addToCartHandler = {addToCartHandler}
         />
       )}
-      <div className="flex max-w-[1200px] w-full">
+      <div className="flex xl:max-w-[1050px] xl:justify-center xl:justify-items-center xl:items-center mx-auto w-full md:my-[50px]">
         <ul className="flex flex-wrap mx-auto items-center justify-center gap-7">
           {filteredMeals}
         </ul>

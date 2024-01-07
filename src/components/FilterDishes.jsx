@@ -1,9 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Pagination from "./Pagination";
 import PopUp from "./PopUp";
-import AllMenuContext from "./DataApi";
+import { AllMenuContext } from "./AllMenuContext";
 
-const FilterDishes = ({ catagories, allmenu, singledish, setsingledish }) => {
+const FilterDishes = ({  allmenu }) => {
+  const [menuCat, setMenuCat] = useState([]);
+  let [singleDish, setSingleDish] = useState([]);
   let [allMenu, setAllmenu] = useState(allmenu);
   let [filterDishes, setFilterDishes] = useState([]);
   let [activeDish, setActiveDish] = useState("Beef");
@@ -13,6 +15,30 @@ const FilterDishes = ({ catagories, allmenu, singledish, setsingledish }) => {
   let [dishName, setDishName] = useState("");
   const allMenus = useContext(AllMenuContext);
 
+  useEffect(() => {
+    const fetchCatagory = async () => {
+      const response = await fetch(
+        "https://www.themealdb.com/api/json/v1/1/categories.php"
+      );
+      const catagorydata = await response.json();
+      // console.log(catagorydata.categories)
+      setMenuCat(catagorydata.categories);
+    };
+
+    const fetchSingleDish = async () => {
+      const response = await fetch(
+        "https://www.themealdb.com/api/json/v1/1/filter.php?c=Beef"
+      );
+      const singledishdata = await response.json();
+      setSingleDish(singledishdata.meals);
+    };
+    // console.log(menuCat)
+    // console.log("Single Dish",singleDish)
+
+    fetchCatagory();
+    fetchSingleDish();
+  }, []);
+
   let endingIndex = currentPage * itemsPerPage;
 
   let startingIndex = endingIndex - itemsPerPage;
@@ -20,11 +46,11 @@ const FilterDishes = ({ catagories, allmenu, singledish, setsingledish }) => {
   let maxItem = 4;
   let SlicePage = filterDishes.slice(startingIndex, endingIndex);
 
-  const showSingleDishItem = singledish.map((item, index) => {
+  const showSingleDishItem = singleDish.map((item, index) => {
     if (index < maxItem) {
       return (
         <div>
-          <li className="mx-3 w-[200px] relative h-[250px] rounded-[5%] bg-slate-400">
+          <li className="xs:w-[190px] xxs:w-[300px] xxs:h-[300px] sm:mx-3 sm:w-[200px] relative sm:h-[250px] rounded-[5%] bg-slate-400 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
             <img
               src={item.strMealThumb}
               alt=""
@@ -50,7 +76,7 @@ const FilterDishes = ({ catagories, allmenu, singledish, setsingledish }) => {
   };
 
   const ShowFilteredData = (category) => {
-    setsingledish([]);
+    setSingleDish([]);
     setActiveDish(category);
     let filterDish = allMenus
       .filter((item) => {
@@ -59,7 +85,7 @@ const FilterDishes = ({ catagories, allmenu, singledish, setsingledish }) => {
       .map((item) => {
         return (
           <a href="javaScript:;" onClick={() => showPopUpHandler(item.strMeal)}>
-            <li className="mx-3 w-[200px] relative h-[250px] rounded-[5%] bg-slate-400">
+            <li className="xs:w-[190px] xxs:w-[300px] xxs:h-[300px] sm:mx-3 w-[200px] relative h-[250px] rounded-[5%] bg-slate-400  shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
               <img
                 src={item.strMealThumb}
                 alt=""
@@ -82,15 +108,15 @@ const FilterDishes = ({ catagories, allmenu, singledish, setsingledish }) => {
       {showPopUp && (
         <PopUp closebtnHandler={closebtnHandler} filterDishes={filterDishes} />
       )}
-      <div className=" h-auto w-full">
-        <ul className=" my-5 flex flex-wrap gap-5 mx-6">
-          {catagories.map((cate) => (
+      <div className=" h-auto w-full items-center justify-center justify-items-center flex mx-auto xl:justify-center xl:justify-items-center xl:items-center xl:max-w-[1024px]">
+        <ul className=" my-5 flex flex-wrap gap-3  justify-center justify-items-center items-center text-center mx-auto">
+          {menuCat.map((cate) => (
             <li
               key={cate.strCategory}
               onClick={() => {
                 ShowFilteredData(cate.strCategory);
               }}
-              className={` font-semibold bg-yellow-500 px-2 py-2 cursor-pointer rounded-xl hover:bg-slate-300 transition-all duration-300 shadow-xl ${
+              className={` font-semibold text-slate-800 bg-yellow-400 px-3 text-sm py-2 cursor-pointer rounded-xl hover:bg-slate-300 transition-all duration-300 shadow-xl lg:text-lg xl:text-xl xl:max-w-[1024px] ${
                 cate.strCategory === activeDish ? "active" : ""
               }`}
             >
@@ -99,7 +125,7 @@ const FilterDishes = ({ catagories, allmenu, singledish, setsingledish }) => {
           ))}
         </ul>
       </div>
-      <div className="flex max-w-[1200px] w-full ">
+      <div className="flex xl:max-w-[1200px] w-full justify-center justify-items-center items-center mx-auto">
         <ul className=" flex flex-wrap mx-auto items-center justify-center gap-7">
           {showSingleDishItem}
           {showSingleDishItem.length !== 0 || filterDishes.length !== 0 ? (
